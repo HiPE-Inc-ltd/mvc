@@ -3,26 +3,40 @@
 namespace  app\core\Route;
 
 use app\helper\Url\Url;
-
 class Route
 {
-    public $uri;
+    public $uri = null;
 
-    public $action;
+    public $action = null;
 
-    public $method;
+    public $function = null;
 
-    public static function get($uri, $method = "")
+    private static $routes = [];
+
+    public static function get($uri, $function)
     {
-        return Route::isMatch($uri);
+        array_push(
+            self::$routes,
+            [
+                'method' => 'get',
+                'uri' => Url::remove_trailing_slash($uri),
+                'function' => $function,
+            ]
+        );
+    }
+    public static function post($uri, $function)
+    {
+        array_push(
+            self::$routes,
+            [
+                'method' => 'post',
+                'uri' => Url::remove_trailing_slash($uri),
+                'function' => $function,
+            ]
+        );
     }
 
-    public static function isMatch($uri)
-    {
-        $bool = false;
-        if (ltrim(Url::sanitize_path_url(), '/') === $uri) {
-            return $bool = true;
-        }
-        return $bool;
+    public static function getRoutes(){
+        return self::$routes;
     }
 }
